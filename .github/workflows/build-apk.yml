@@ -1,0 +1,62 @@
+name: Build HTML5 Game to APK
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch: # Позволяет запустить сборку вручную из вкладки Actions
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+
+    steps:
+    - name: Checkout кода
+      uses: actions/checkout@v4
+
+    - name: Установка Java (JDK 17)
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Установка Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Установка Cordova
+      run: npm install -g cordova
+
+    - name: Принятие лицензий Android SDK
+      run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+
+    - name: Создание Cordova проекта
+      run: |
+        # Создаем проект (com.kamishikii.game можно заменить на свой пакет)
+        cordova create MyGame com.kamishikii.game MyGame
+        cd MyGame
+        cordova platform add android
+
+    - name: Копирование файлов игры в проект
+      run: |
+        # Удаляем стандартные демо-файлы Cordova
+        rm -rf MyGame/www/*
+        # Копируем ваши файлы (index.html, css, js, assets) в папку www
+        cp -r index.html css js assets MyGame/www/
+        echo "Проверка содержимого папки www:"
+        ls -la MyGame/www/
+
+    - name: Сборка APK
+      run: |
+        cd MyGame
+        # Сборка debug-версии APK
+        cordova build android --debug
+
+    - name: Загрузка готового APK (Artifact)
+      uses: actions/upload-artifact@v4
+      with:
+        name: MyGame-Debug-APK
+        # Путь к APK для современных версий Cordova-Android
+        path: MyGame/platforms/android/app/build/outputs/apk/debug/app-debug.apk
