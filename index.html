@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Potion Shop Tycoon</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Верхняя панель -->
+        <div id="top-bar">
+            <div class="currency">💰 <span id="coin-count">0</span></div>
+            <div class="currency">⭐ Уровень: <span id="level-count">1</span></div>
+        </div>
+
+        <!-- Игровая локация -->
+        <div id="game-world">
+            <!-- Фон задается через CSS или img в JS -->
+            <img id="background-img" src="assets/location.png" alt="Location">
+            
+            <!-- Сюда JS будет добавлять стойки, фей и клиентов -->
+            <div id="entities-layer"></div>
+        </div>
+
+        <!-- Нижняя панель управления -->
+        <div id="bottom-bar">
+            <button class="btn" onclick="game.buyCounter()">
+                🏪 Новая стойка<br><span class="cost" id="cost-counter">100💰</span>
+            </button>
+            <button class="btn" onclick="game.buyFairy()">
+                🧚 Нанять фею<br><span class="cost" id="cost-fairy">250💰</span>
+            </button>
+            <button class="btn" onclick="game.upgradeAll()">
+                ⚡ Улучшить все<br><span class="cost" id="cost-upgrade">500💰</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Подключаем скрипт в конце -->
+    <script src="js/game.js"></script>
+</body>
+</html>
